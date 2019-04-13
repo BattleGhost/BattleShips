@@ -1,4 +1,4 @@
-from classes import *
+from players import *
 
 field1 = Field()
 
@@ -13,4 +13,8 @@ print(field1, "\n")
 field1.del_ship(8, 7)
 print(field1)
 
+bot = EasyBot()
+bot.specify_coordinate(field1)
 
+player = Player()
+player.specify_coordinate()

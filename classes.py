@@ -125,7 +125,7 @@ class Field:
                         if ship[1] == x and ship[2] + i == y:
                             isStop = True
                             break
-                if isStop == True:
+                if isStop:
                     self.__ships.remove(ship)
                     ships = self.__ships
                     self.__init__()
