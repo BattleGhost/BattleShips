@@ -112,6 +112,30 @@ class Field:
                 self.map[y+i-1][x-1] = 1
         self.__ships.append((ship, x, y))
 
+    def del_ship(self, x, y):
+        if self.map[y-1][x-1] == 1:
+            for ship in self.__ships:
+                isStop = False
+                for i in range(ship[0].size):
+                    if ship[0].position == 0:
+                        if ship[1] + i == x and ship[2] == y:
+                            isStop = True
+                            break
+                    else:
+                        if ship[1] == x and ship[2] + i == y:
+                            isStop = True
+                            break
+                if isStop == True:
+                    self.__ships.remove(ship)
+                    ships = self.__ships
+                    self.__init__()
+                    for sh in ships:
+                        self.place_ship(sh[0], sh[1], sh[2])
+                    break
+
+        else:
+            return False
+
     def __repr__(self):
         return self.map
 
