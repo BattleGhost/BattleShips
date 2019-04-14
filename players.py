@@ -99,6 +99,7 @@ class EasyBot(GameParticipants, Bot):
             else:
                 attempt = attempt +1
         return(pix, piy)
+        #hi
 
 class NormalBot(GameParticipants, Bot):
     def __init__(self):
