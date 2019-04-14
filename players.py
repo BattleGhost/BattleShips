@@ -39,7 +39,7 @@ class EasyBot(GameParticipants, Bot):
         attempt = 1
         while (attempt<3) :
             pix = random.randint(0, 9)
-            pix = random.randint(0, 9)
+            piy = random.randint(0, 9)
             for i in range(10):
                 for j in range(10):
                     if (enemy_field.map[i][j]==3):
