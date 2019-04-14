@@ -44,25 +44,26 @@ class EasyBot(GameParticipants, Bot):
         self.name = "[Easy Bot] " + Bot.choose_name(0, 18)
     def specify_coordinate(self, enemy_field):
         attempt = 1
-        while (attempt<3) :
+        r=3
+        while (attempt  <5) :
             pix = random.randint(0, 9)
-            pix = random.randint(0, 9)
+            piy = random.randint(0, 9)
             for i in range(10):
                 for j in range(10):
-                    if (enemy_field.map[i][j]==3):
+                    if (enemy_field.map[i][j] == 3):
                         if (enemy_field.map[i + 1][j] == 5):
-                            if(i==0):
+                            if(i == 0):
                                break
                             return (i - 1, j)
                         else:
-                            if(enemy_field.map[i+1][j]==3):
+                            if(enemy_field.map[i+1][j] == 3):
                                 if (enemy_field.map[i + 2][j] == 5):
                                     if (i == 0):
                                         break
                                     return (i - 1, j)
                                 else:
-                                    if (enemy_field.map[i+2][j]==3):
-                                        if (enemy_field.map[i+3][j]==5):
+                                    if (enemy_field.map[i+2][j] == 3):
+                                        if (enemy_field.map[i+3][j] == 5):
                                             if (i == 0):
                                                 break
                                             return (i -1, j)
@@ -70,7 +71,7 @@ class EasyBot(GameParticipants, Bot):
                                             return (i+3,j)
                                     else:
                                         return (i + 2, j)
-                        if(enemy_field.map[i][j+1]==3):
+                        if(enemy_field.map[i][j+1] == 3):
                             if (enemy_field.map[i][j+1] == 5):
                                 if (j == 0):
                                     break
@@ -90,25 +91,36 @@ class EasyBot(GameParticipants, Bot):
                                             else:
                                                 return (i, j+3)
                                         else:
-                                            return (i , j+2)
+                                            return (i, j+2)
             if (enemy_field.map[pix][piy]==1):
                 return (pix, piy)
             elif(enemy_field.map[pix][piy]==0):
-                if ((j == 0)or(j == 1)or(j == 2)or(i == 0)or(i == 1)or(i == 2)):
-                    attempt = attempt + 1
-                else:
-                    i = pix-2
-                    j = piy-2
-                    for i in range(5):
-                        for j in range(5):
-                            if (enemy_field.map[pix][piy]==1):
-                                return (pix, piy)
-            elif(enemy_field.map[pix][piy]==5):
-                attempt=attempt
+                xmax= pix+r
+                ymax= piy+r
+                xmin= pix-r
+                ymin = piy - r
+                if (pix+r>9):
+                    xmax= 9
+                if(piy+r>9):
+                    ymax = 9
+                if (pix - r < 0):
+                    xmin= 0
+                if (piy- r < 0):
+                    ymin = 0
+
+                for k in range(xmin, xmax-1):
+                    for h in range(ymin, ymax-1):
+                        if (enemy_field.map[k][h]==1):
+                            return (pix, piy)
+            elif((enemy_field.map[pix][piy]==5) or (enemy_field.map[pix][piy]==4)):
+                attempt = attempt
             else:
                 attempt = attempt +1
-        return(random.randint(0, 9), random.randint(0, 9))
-        #hi
+        for i in range(10):
+            for j in range(10):
+                if(enemy_field.map[i][j] == 1):
+                    return(i, j)
+                #hi
 
 class NormalBot(GameParticipants, Bot):
     def __init__(self):
