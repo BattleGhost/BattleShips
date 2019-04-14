@@ -96,7 +96,7 @@ class EasyBot(GameParticipants, Bot):
                         for j in range(5):
                             if (enemy_field.map[pix][piy]==1):
                                 return (pix, piy)
-            elif(enemy_field.map[pix][piy]==5):
+            elif((enemy_field.map[pix][piy]==5)or(enemy_field.map[pix][piy]==4)):
                 attempt=attempt
             else:
                 attempt = attempt +1
