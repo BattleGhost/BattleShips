@@ -37,9 +37,9 @@ class EasyBot(GameParticipants, Bot):
         self.name = "[Easy Bot] " + Bot.choose_name(0, 18)
     def specify_coordinate(self, enemy_field):
         attempt = 1
-        while (attempt<30) :
+        while (attempt<3) :
             pix = random.randint(0, 9)
-            piy = random.randint(0, 9)
+            pix = random.randint(0, 9)
             for i in range(10):
                 for j in range(10):
                     if (enemy_field.map[i][j]==3):
@@ -96,9 +96,11 @@ class EasyBot(GameParticipants, Bot):
                         for j in range(5):
                             if (enemy_field.map[pix][piy]==1):
                                 return (pix, piy)
+            elif(enemy_field.map[pix][piy]==5):
+                attempt=attempt
             else:
                 attempt = attempt +1
-        return(pix, piy)
+        return(random.randint(0, 9), random.randint(0, 9))
         #hi
 
 class NormalBot(GameParticipants, Bot):
