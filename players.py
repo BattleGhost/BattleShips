@@ -1,6 +1,7 @@
 from classes import *
 import random
 
+
 class GameParticipants:
     def __init__(self):
         self.ship11 = Ship(1, 0)
@@ -15,20 +16,19 @@ class GameParticipants:
         self.ship41 = Ship(4, 0)
         self.ships = (self.ship41, self.ship31, self.ship32, self.ship21,
                       self.ship22, self.ship23, self.ship11, self.ship12, self.ship13, self.ship14)
+
     def random_placing(self, field):
         for ship in self.ships:
             if random.randint(0, 1) == 1:
                 ship.rotate()
             sh = False
             while not sh:
-                sh = field.place_ship(ship, random.randint(1,10), random.randint(1,10))
-
-
+                sh = field.place_ship(ship, random.randint(1, 10), random.randint(1, 10))
 
 
 class Bot:
-    @classmethod
-    def choose_name(cls, a, b):
+    @staticmethod
+    def choose_name(a, b):
         return ["Armstrong", "Bandit", "Beast", "Boomer", "Buzz",
             "Casper", "Caveman", "C-Block", "Centice", "Chipper",
             "Cougar", "Dude", "Foamer", "Fury", "Gerwin", "Goose",
@@ -41,11 +41,14 @@ class Bot:
             "Sundown", "Sultan", "Swabbie", "Tusk", "Tex",
             "Viper", "Wolfman", "Yuri"][random.randint(a, b)]
 
+
 class EasyBot(GameParticipants, Bot):
     def __init__(self):
         super().__init__()
         self.name = "[Easy Bot] " + Bot.choose_name(0, 18)
-    def specify_coordinate(self, enemy_field):
+
+    @staticmethod
+    def specify_coordinate(enemy_field):
         attempt = 1
         r = 3
         while (attempt  < 10) :
@@ -129,7 +132,9 @@ class NormalBot(GameParticipants, Bot):
     def __init__(self):
         super().__init__()
         self.name = "[Normal Bot] " + Bot.choose_name(19, 36)
-    def specify_coordinate(self, enemy_field):
+
+    @staticmethod
+    def specify_coordinate(enemy_field):
         attempt = 1
         r = 2
         while (attempt < 10):
@@ -213,7 +218,9 @@ class HardBot(GameParticipants, Bot):
     def __init__(self):
         super().__init__()
         self.name = "[Hard Bot] " + Bot.choose_name(37, 54)
-    def specify_coordinate(self, enemy_field):
+
+    @staticmethod
+    def specify_coordinate(enemy_field):
         attempt = 1
         r = 1
         while (attempt < 15):
@@ -310,7 +317,9 @@ class Player(GameParticipants):
     def __init__(self, name = "Player"):
         super().__init__()
         self.name = name
-    def specify_coordinate(self):
-        #Временный вариант выбора координат
+
+    @staticmethod
+    def specify_coordinate():
+        # Временный вариант выбора координат
         x = int(input("Введите Х:"))
         y = int(input("Введите Y:"))
