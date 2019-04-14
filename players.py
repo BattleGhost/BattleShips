@@ -119,7 +119,7 @@ class EasyBot(GameParticipants, Bot):
                 attempt = attempt +1
         for i in range(10):
             for j in range(10):
-                if(enemy_field.map[i][j] == 1):
+                if(enemy_field.map[i][j] == 0):
                     return(i, j)
                 #hi
 
@@ -201,7 +201,7 @@ class NormalBot(GameParticipants, Bot):
                 attempt = attempt + 1
         for i in range(10):
             for j in range(10):
-                if (enemy_field.map[i][j] == 1):
+                if (enemy_field.map[i][j] == 0):
                     return (i, j)
 
 
@@ -313,7 +313,7 @@ class HardBot(GameParticipants, Bot):
 
         for i in range(10):
             for j in range(10):
-                if (enemy_field.map[i][j] == 1):
+                if (enemy_field.map[i][j] == 0):
                     return (i, j)
 
 
