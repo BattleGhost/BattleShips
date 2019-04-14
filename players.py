@@ -144,4 +144,5 @@ class Player(GameParticipants):
         self.name = name
     def specify_coordinate(self):
         #Временный вариант выбора координат
-        x= input()
+        x = int(input("Введите Х:"))
+        y = int(input("Введите Y:"))
