@@ -111,6 +111,7 @@ class Field:
                     self.map[y + i - 1][x] = 2
                 self.map[y+i-1][x-1] = 1
         self.__ships.append((ship, x, y))
+        return True
 
     def del_ship(self, x, y):
         if self.map[y-1][x-1] == 1:

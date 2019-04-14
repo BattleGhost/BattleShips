@@ -13,14 +13,12 @@ class GameParticipants:
         self.ship31 = Ship(3, 0)
         self.ship32 = Ship(3, 0)
         self.ship41 = Ship(4, 0)
-    def random_placing(self):
-        vova = True
-        while True:
-            vova = Field.place_ship(self, self.ship41, x=random.randint(1, 10), y=random.randint(1, 10))
-            if vova == False:
-                break
-            else:
-                continue
+    def random_placing(self, field):
+        if random.randint(0, 1) == 1:
+            self.ship41.rotate()
+        ship41 = False
+        while not ship41:
+            ship41 = field.place_ship(self.ship41, random.randint(1,10), random.randint(1,10))
 
 
 

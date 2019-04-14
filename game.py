@@ -13,8 +13,9 @@ print(field1, "\n")
 field1.del_ship(8, 7)
 print(field1)
 
-bot = EasyBot()
-bot.specify_coordinate(field1)
+field2 = Field()
 
-player = Player()
-player.specify_coordinate()
+bot = GameParticipants()
+print(field2, "\n")
+bot.random_placing(field2)
+print(field2)
