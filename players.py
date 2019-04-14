@@ -113,6 +113,7 @@ class EasyBot(GameParticipants, Bot):
             for j in range(10):
                 if(enemy_field.map[i][j] == 1):
                     return(i, j)
+                #hi
 
 class NormalBot(GameParticipants, Bot):
     def __init__(self):
