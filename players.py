@@ -97,7 +97,7 @@ class EasyBot(GameParticipants, Bot):
                                             return (i, j+2)
             if (enemy_field.map[pix][piy]==1):
                 return (pix, piy)
-            elif((enemy_field.map[pix][piy] == 0)or(enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
+            elif(enemy_field.map[pix][piy] == 0):
                 xmax= pix+r
                 ymax= piy+r
                 xmin= pix-r
@@ -115,6 +115,8 @@ class EasyBot(GameParticipants, Bot):
                     for h in range(ymin, ymax-1):
                         if (enemy_field.map[k][h]==1):
                             return (pix, piy)
+            elif((enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
+                attempt = attempt
             else:
                 attempt = attempt +1
         for i in range(10):
@@ -179,7 +181,7 @@ class NormalBot(GameParticipants, Bot):
                                             return (i, j + 2)
             if (enemy_field.map[pix][piy] == 1):
                 return (pix, piy)
-            elif ((enemy_field.map[pix][piy] == 0)or(enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
+            elif (enemy_field.map[pix][piy] == 0):
                 xmax = pix + r
                 ymax = piy + r
                 xmin = pix - r
@@ -197,6 +199,8 @@ class NormalBot(GameParticipants, Bot):
                     for h in range(ymin, ymax - 1):
                         if (enemy_field.map[k][h] == 1):
                             return (pix, piy)
+            elif ((enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
+                attempt = attempt
             else:
                 attempt = attempt + 1
         for i in range(10):
@@ -261,7 +265,7 @@ class HardBot(GameParticipants, Bot):
                                             return (i, j + 2)
             if (enemy_field.map[pix][piy] == 1):
                 return (pix, piy)
-            elif ((enemy_field.map[pix][piy] == 0)or(enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
+            elif (enemy_field.map[pix][piy] == 0):
                 if (pix==0)and(piy==0):
                     if ((enemy_field.map[pix][piy+1] == 1)or(enemy_field.map[pix+1][piy] == 1)):
                         return (pix, piy)
@@ -291,7 +295,10 @@ class HardBot(GameParticipants, Bot):
                         return (pix, piy)
                 elif ((enemy_field.map[pix][piy - 1] == 1) or (enemy_field.map[pix + 1][piy ] == 1)or(enemy_field.map[pix][piy + 1] == 1) or (enemy_field.map[pix - 1][piy ] == 1)):
                     return (pix, piy)
-
+                elif ((enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
+                    attempt = attempt
+                else:
+                    attempt = attempt+1
                 '''xmax = pix + r
                 ymax = piy + r
                 xmin = pix - r
@@ -304,7 +311,6 @@ class HardBot(GameParticipants, Bot):
                     xmin = 0
                 if (piy - r < 0):
                     ymin = 0
-
                 for k in range(xmin, xmax - 1):
                     for h in range(ymin, ymax - 1):
                         if (k == h):
