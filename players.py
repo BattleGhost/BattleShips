@@ -48,7 +48,7 @@ class EasyBot(GameParticipants, Bot):
     def specify_coordinate(self, enemy_field):
         attempt = 1
         r=3
-        while (attempt  <5) :
+        while (attempt  <20) :
             pix = random.randint(0, 9)
             piy = random.randint(0, 9)
             for i in range(10):
@@ -97,7 +97,7 @@ class EasyBot(GameParticipants, Bot):
                                             return (i, j+2)
             if (enemy_field.map[pix][piy]==1):
                 return (pix, piy)
-            elif(enemy_field.map[pix][piy]==0):
+            elif((enemy_field.map[pix][piy] == 0)or(enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
                 xmax= pix+r
                 ymax= piy+r
                 xmin= pix-r
@@ -115,8 +115,6 @@ class EasyBot(GameParticipants, Bot):
                     for h in range(ymin, ymax-1):
                         if (enemy_field.map[k][h]==1):
                             return (pix, piy)
-            elif((enemy_field.map[pix][piy]==5) or (enemy_field.map[pix][piy]==4)):
-                attempt = attempt
             else:
                 attempt = attempt +1
         for i in range(10):
@@ -132,7 +130,7 @@ class NormalBot(GameParticipants, Bot):
     def specify_coordinate(self, enemy_field):
         attempt = 1
         r = 2
-        while (attempt < 5):
+        while (attempt < 10):
             pix = random.randint(0, 9)
             piy = random.randint(0, 9)
             for i in range(10):
@@ -181,7 +179,7 @@ class NormalBot(GameParticipants, Bot):
                                             return (i, j + 2)
             if (enemy_field.map[pix][piy] == 1):
                 return (pix, piy)
-            elif (enemy_field.map[pix][piy] == 0):
+            elif ((enemy_field.map[pix][piy] == 0)or(enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
                 xmax = pix + r
                 ymax = piy + r
                 xmin = pix - r
@@ -199,8 +197,6 @@ class NormalBot(GameParticipants, Bot):
                     for h in range(ymin, ymax - 1):
                         if (enemy_field.map[k][h] == 1):
                             return (pix, piy)
-            elif ((enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
-                attempt = attempt
             else:
                 attempt = attempt + 1
         for i in range(10):
