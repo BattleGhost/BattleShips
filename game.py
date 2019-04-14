@@ -21,7 +21,6 @@ field2 = Field()
 bot = EasyBot()
 print(field2, "\n")
 bot.random_placing(field2)
-
 print(field2, "\n")
 
 bot.specify_coordinate(field1)
