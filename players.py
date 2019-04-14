@@ -36,6 +36,53 @@ class EasyBot(GameParticipants, Bot):
         super().__init__()
         self.name = "[Easy Bot] " + Bot.choose_name(0, 18)
     def specify_coordinate(self, enemy_field):
+        attempt = 1
+        while (attempt<3) :
+            pix = random.randint(1, 10)
+            piy = random.randint(1, 10)
+            for i in range(10):
+                for j in range(10):
+                    if (enemy_field[i][j]==3):
+                        if (enemy_field[i + 1][j] == 5):
+                            return (i - 1, j)
+                        else:
+                            if(enemy_field[i+1][j]==3):
+                                if (enemy_field[i + 2][j] == 5):
+                                    return (i - 1, j)
+                                else:
+                                    if (enemy_field[i+2][j]==3):
+                                        if (enemy_field[i+3][j]==5):
+                                            return (i -1, j)
+                                        else:
+                                            return (i+3,j)
+                                    else:
+                                        return (i + 2, j)
+                        if(enemy_field[i][j+1]==3):
+                            if (enemy_field[i][j+1] == 5):
+                                return (i, j-1)
+                            else:
+                                if (enemy_field[i][j+1] == 3):
+                                    if (enemy_field[i][j+2] == 5):
+                                        return (i, j-1)
+                                    else:
+                                        if (enemy_field[i][j+2] == 3):
+                                            if (enemy_field[i][j+3] == 5):
+                                                return (i, j-1)
+                                            else:
+                                                return (i, j+3)
+                                        else:
+                                            return (i , j+2)
+            if (enemy_field[pix][piy]==1):
+                return (pix, piy)
+            elif(enemy_field[pix][piy]==0):
+                i = pix-2
+                j = piy-2
+                for i in range(5):
+                    for j in range(5):
+                        if (enemy_field[pix][piy]==1):
+                            return (pix, piy)
+            else:
+                attempt = attempt +1
         pass
 
 class NormalBot(GameParticipants, Bot):
