@@ -14,7 +14,16 @@ class GameParticipants:
         self.ship32 = Ship(3, 0)
         self.ship41 = Ship(4, 0)
     def random_placing(self):
-        pass
+        vova = True
+        while True:
+            vova = Field.place_ship(self, self.ship41, x=random.randint(1, 10), y=random.randint(1, 10))
+            if vova == False:
+                break
+            else:
+                continue
+
+
+
 
 class Bot:
     @classmethod
