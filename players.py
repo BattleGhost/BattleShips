@@ -57,84 +57,47 @@ class EasyBot(GameParticipants, Bot):
             for i in range(10):
                 for j in range(10):
                     if (enemy_field.map[i][j] == 3):
-                        if i+3<9 and i-3>0:
-                            if (enemy_field.map[i + 1][j] == 5):
-                                if (i == 0):
-                                    break
-                                return (i - 1, j)
-                            else:
-                                if (enemy_field.map[i + 1][j] == 3):
-                                    if (enemy_field.map[i + 2][j] == 5):
-                                        if (i == 0):
-                                            break
-                                        return (i - 1, j)
-                                    else:
-                                        if (enemy_field.map[i + 2][j] == 3):
-                                            if (enemy_field.map[i + 3][j] == 5):
-                                                if (i == 0):
-                                                    break
-                                                return (i - 1, j)
-                                            else:
-                                                return (i + 3, j)
-                                        else:
-                                            return (i + 2, j)
-                            if (enemy_field.map[i][j + 1] == 3):
-                                if (enemy_field.map[i][j + 1] == 5):
-                                    if (j == 0):
-                                        break
-                                    return (i, j - 1)
-                                else:
-                                    if (enemy_field.map[i][j + 1] == 3):
-                                        if (enemy_field.map[i][j + 2] == 5):
-                                            if (j == 0):
-                                                break
-                                            return (i, j - 1)
-                                        else:
-                                            if (enemy_field.map[i][j + 2] == 3):
-                                                if (enemy_field.map[i][j + 3] == 5):
-                                                    if (j == 0):
-                                                        break
-                                                    return (i, j - 1)
-                                                else:
-                                                    return (i, j + 3)
-                                            else:
-                                                return (i, j + 2)
+                        if (enemy_field.map[i + 1][j] == 5):
+                            if (i == 0):
+                                break
+                            return (i - 1, j)
                         else:
-                            for k in range(4):
-                                for h in range(4):
-                                    if k==0 or k==2:
-                                        if (i+h+1<9):
-                                            if enemy_field.map[i + h][j] == 3:
-
-                                            elif enemy_field.map[i + h][j] == 5:
-                                                
-                                    else:
-                                        if enemy_field.map[i][j+h] == 3:
-
-
-
-
-                                if i==0:
-                                    if (enemy_field.map[i + 1][j] == 3):
-                                        if (enemy_field.map[i + 2][j] == 3):
-                                            return (i+3, j)
+                            if (enemy_field.map[i + 1][j] == 3):
+                                if (enemy_field.map[i + 2][j] == 5):
+                                    if (i == 0):
+                                        break
+                                    return (i - 1, j)
+                                else:
+                                    if (enemy_field.map[i + 2][j] == 3):
+                                        if (enemy_field.map[i + 3][j] == 5):
+                                            if (i == 0):
+                                                break
+                                            return (i - 1, j)
                                         else:
-                                            return (i + 2, j)
-                                    elif(enemy_field.map[i+1][j] == 5):
-                                        if
+                                            return (i + 3, j)
                                     else:
-                                        return (i + 1, j)
-
-                                elif i ==1:
-                                    if (enemy_field.map[i + 1][j] == 3):
-                                        if (enemy_field.map[i + 2][j] == 3):
-                                            return (i+3, j)
+                                        return (i + 2, j)
+                        if (enemy_field.map[i][j + 1] == 3):
+                            if (enemy_field.map[i][j + 1] == 5):
+                                if (j == 0):
+                                    break
+                                return (i, j - 1)
+                            else:
+                                if (enemy_field.map[i][j + 1] == 3):
+                                    if (enemy_field.map[i][j + 2] == 5):
+                                        if (j == 0):
+                                            break
+                                        return (i, j - 1)
+                                    else:
+                                        if (enemy_field.map[i][j + 2] == 3):
+                                            if (enemy_field.map[i][j + 3] == 5):
+                                                if (j == 0):
+                                                    break
+                                                return (i, j - 1)
+                                            else:
+                                                return (i, j + 3)
                                         else:
-                                            return (i + 2, j)
-                                    elif(enemy_field.map[i+1][j] != 5):
-                                        return (i + 1, j)
-                                    else:
-                                        return (i + 1, j)
+                                            return (i, j + 2)
             if (enemy_field.map[pix][piy] == 1):
                 return (pix, piy)
             elif (enemy_field.map[pix][piy] == 0):
