@@ -246,6 +246,7 @@ class HardBot(GameParticipants, Bot):
                                                 break
                                             return (i - 1, j)
                                         else:
+                                            if(z):
                                             return (i + 3, j)
                                     else:
                                         return (i + 2, j)

@@ -24,7 +24,6 @@ bot3 = HardBot()
 print(field2, "\n")
 bot1.random_placing(field2)
 print(field2, "\n")
-
 print(bot1.specify_coordinate(field2))
 print(bot2.specify_coordinate(field2))
 print(bot3.specify_coordinate(field2))
