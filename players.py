@@ -51,81 +51,119 @@ class EasyBot(GameParticipants, Bot):
     def specify_coordinate(enemy_field):
         attempt = 1
         r = 3
-        while (attempt < 10):
-            pix = random.randint(0, 9)
-            piy = random.randint(0, 9)
-            for i in range(10):
-                for j in range(10):
-                    if (enemy_field.map[i][j] == 3):
-                        if (enemy_field.map[i + 1][j] == 5):
-                            if (i == 0):
-                                break
-                            return (i - 1, j)
-                        else:
-                            if (enemy_field.map[i + 1][j] == 3):
-                                if (enemy_field.map[i + 2][j] == 5):
-                                    if (i == 0):
-                                        break
-                                    return (i - 1, j)
-                                else:
-                                    if (enemy_field.map[i + 2][j] == 3):
-                                        if (enemy_field.map[i + 3][j] == 5):
-                                            if (i == 0):
-                                                break
-                                            return (i - 1, j)
-                                        else:
-                                            return (i + 3, j)
-                                    else:
-                                        return (i + 2, j)
-                        if (enemy_field.map[i][j + 1] == 3):
-                            if (enemy_field.map[i][j + 1] == 5):
-                                if (j == 0):
-                                    break
-                                return (i, j - 1)
-                            else:
-                                if (enemy_field.map[i][j + 1] == 3):
-                                    if (enemy_field.map[i][j + 2] == 5):
-                                        if (j == 0):
-                                            break
-                                        return (i, j - 1)
-                                    else:
-                                        if (enemy_field.map[i][j + 2] == 3):
-                                            if (enemy_field.map[i][j + 3] == 5):
-                                                if (j == 0):
-                                                    break
-                                                return (i, j - 1)
-                                            else:
-                                                return (i, j + 3)
-                                        else:
-                                            return (i, j + 2)
-            if (enemy_field.map[pix][piy] == 1):
-                return (pix, piy)
-            elif (enemy_field.map[pix][piy] == 0):
-                xmax = pix + r
-                ymax = piy + r
-                xmin = pix - r
-                ymin = piy - r
-                if (pix + r > 9):
-                    xmax = 9
-                if (piy + r > 9):
-                    ymax = 9
-                if (pix - r < 0):
-                    xmin = 0
-                if (piy - r < 0):
-                    ymin = 0
-
-                for k in range(xmin, xmax - 1):
-                    for h in range(ymin, ymax - 1):
-                        if (enemy_field.map[k][h] == 1):
-                            return (pix, piy)
-            elif ((enemy_field.map[pix][piy] == 5) or (enemy_field.map[pix][piy] == 4)):
-                attempt = attempt
-            else:
-                attempt = attempt + 1
+        lenmax = 4
+        len2 = 0
+        len3 = 0
+        len4 = 0
         for i in range(10):
             for j in range(10):
-                if (enemy_field.map[i][j] == 0):
-                    return (i, j)
+                if enemy_field.map[i][j] == 4:
+                    if i + 1 < 10:
+                        if enemy_field.map[i + 1][j] == 4:
+                            if i + 2 < 10:
+                                if enemy_field.map[i + 2][j] == 4:
+                                    if i + 3 < 10:
+                                        if enemy_field.map[i + 3][j] == 4:
+                                            len4 = 1
+                                        else:
+                                            len3 = len3 + 1
+                                    len3 = len3 + 1
+                                else:
+                                    len2 = len2 + 1
+                            else:
+                                len2 = len2 + 1
+                    else:
+                        if j + 1 < 10:
+                            if enemy_field.map[i][j + 1] == 4:
+                                if i + 2 < 10:
+                                    if enemy_field.map[i][j + 2] == 4:
+                                        if i + 3 < 10:
+                                            if enemy_field.map[i][j + 3] == 4:
+                                                len4 = 1
+                                            else:
+                                                len3 = len3 + 1
+                                        len3 = len3 + 1
+                                    else:
+                                        len2 = len2 + 1
+                                else:
+                                    len2 = len2 + 1
+                if len4 == 0:
+                    lenmax = 4
+                elif len3 == 0:
+                    lenmax = 3
+                elif len2 == 0:
+                    lenmax = 2
+                else:
+                    lenmax = 1
+        for i in range(10):
+            for j in range(10):
+                if enemy_field.map[i][j] == 3:
+                    for k in range(1, lenmax):
+                        if i + k < 10:
+                            if enemy_field.map[i + k][j] == 5:
+                                for n in range(1, lenmax - k):
+                                    if i - n > 0:
+                                        if enemy_field.map[i - k][j] == 5:
+                                            break
+                                        else:
+                                            return i - n, j
+                                break
+                            elif enemy_field.map[i + k][j] == 0 or enemy_field.map[i + k][j] == 1:
+                                return i + k, j
+                            else:
+                                continue
+                        elif enemy_field.map[i - k][j] != 5:
+                            return i - k, j
+                        else:
+                            break
+                    for k in range(1, lenmax):
+                        if j + k < 10:
+                            if enemy_field.map[i][j + k] == 5:
+                                for n in range(1, lenmax - k):
+                                    if i - n > 0:
+                                        if enemy_field.map[i][j - k] == 5:
+                                            break
+                                        else:
+                                            return i, j - n
+                                break
+                            elif enemy_field.map[i][j + k] == 0 or enemy_field.map[i][j + k] == 1:
+                                return i, j + k
+                            else:
+                                continue
+                        elif enemy_field.map[i][j - k] != 5:
+                            return i, j - k
+                else:
+                    while attempt < 10:
+                        pix = random.randint(0, 9)
+                        piy = random.randint(0, 9)
+                        if enemy_field.map[pix][piy] == 1:
+                            return pix, piy
+                        elif enemy_field.map[pix][piy] == 0:
+                            xmax = pix + r
+                            ymax = piy + r
+                            xmin = pix - r
+                            ymin = piy - r
+                            if pix + r > 9:
+                                xmax = 9
+                            if piy + r > 9:
+                                ymax = 9
+                            if pix - r < 0:
+                                xmin = 0
+                            if piy - r < 0:
+                                ymin = 0
+
+                            for k in range(xmin, xmax - 1):
+                                for h in range(ymin, ymax - 1):
+                                    if enemy_field.map[k][h] == 1:
+                                        return (pix, piy)
+                        elif enemy_field.map[pix][piy] == 5 or enemy_field.map[pix][piy] == 4:
+                            attempt = attempt
+                        else:
+                            attempt = attempt + 1
+                    for i in range(10):
+                        for j in range(10):
+                            if enemy_field.map[i][j] == 0:
+                                return i, j
 
 
 class NormalBot(GameParticipants, Bot):
