@@ -1,0 +1,1 @@
+{"volume": {"all_volume": 902, "music_volume": 939, "effects_volume": 875}, "player": {"nickname": "Shpek"}}

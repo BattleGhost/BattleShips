@@ -1,588 +1,375 @@
 import pygame
-
-pygame.init()
-
-display_width = 1280
-display_height = 720
-icon = pygame.image.load("img/icon.png")
-pygame.display.set_icon(icon)
-pygame.display.set_caption("BattleShips")
-Display = pygame.display.set_mode((display_width, display_height))
-
-clock = pygame.time.Clock()
-background = pygame.image.load("img/backgroundhd.png")
-bs = pygame.image.load("img/battleships2.png")
-start1 = pygame.image.load("img/start1.png")
-start2 = pygame.image.load("img/start2.png")
-settings1 = pygame.image.load("img/settings1.png")
-settings2 = pygame.image.load("img/settings2.png")
-guide1 = pygame.image.load("img/guide1.png")
-guide2 = pygame.image.load("img/guide2.png")
+import json
+from text_input import *
+from singleton import *
 
 
-
-
-
-def main_menu():
-    closed = False
-    down = True
-    bsy = 62
-    while not closed:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                closed = True
-
-        Display.blit(background, (0, 0))
-        Display.blit(bs, (384, bsy))
-
-
-        mp = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
-        if mp[0] > 542 and mp[0] < 758 and mp[1] > 250 and mp[1] < 327:
-            Display.blit(start2, (542, 250))
-            if click[0] == 1:
-                game_loop()
-        else:
-            Display.blit(start1, (542, 250))
-
-        if mp[0] > 542 and mp[0] < 757 and mp[1] > 350 and mp[1] < 422:
-            Display.blit(settings2, (542, 350))
-        else:
-            Display.blit(settings1, (542, 350))
-
-        if mp[0] > 542 and mp[0] < 757 and mp[1] > 450 and mp[1] < 523:
-            Display.blit(guide2, (542, 450))
-        else:
-            Display.blit(guide1, (542, 450))
-
-
-        if down:
-            bsy+=1
-        elif down == False:
-            bsy-=1
-
-        if bsy == 52:
-            down = True
-        if bsy == 82:
-            down = False
-
-        pygame.display.update()
-        clock.tick(60)
-
-def game_loop():
-    closed = False
-    while not closed:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                closed = True
-                pygame.quit()
-                quit()
-
-        Display.blit(background, (0, 0))
-
-        pygame.display.update()
-        clock.tick(60)
-
-main_menu()
-pygame.quit()
-quit()
-
-"""
-import sys, random
-from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QPushButton
-from PyQt5.QtCore import Qt, QBasicTimer, pyqtSignal, QRect, QSize, QPoint
-from PyQt5.QtGui import QPainter, QColor, QIcon
-
-class Game(QMainWindow):
+class GameManager(metaclass=Singleton):
     def __init__(self):
-        super().__init__()
-
-        self.initMainMenu()
-        self.initUI()
-
-
-    def initUI(self):
-
-        self.resize(1280, 720)
-        self.setWindowTitle('BattleShips')
-        self.setWindowIcon(QIcon("icon.ico"))
-
-        self.show()
-
-    def initMainMenu(self):
-
-        self.startButton = QPushButton()
-        self.startButton.setText("Play")
-        self.startButton.setGeometry(QRect(QPoint(100, 100), QSize(200, 50)))
-
-
-
-
-class Tetris(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
-
-        self.initUI()
-
-
-    def initUI(self):
-
-        self.tboard = Board(self)
-        self.setCentralWidget(self.tboard)
-
-        self.statusbar = self.statusBar()
-        self.tboard.msg2Statusbar[str].connect(self.statusbar.showMessage)
-
-        self.tboard.start()
-
-        self.resize(180, 380)
-        self.center()
-        self.setWindowTitle('Tetris')
-        self.show()
-
-
-    def center(self):
-
-        screen = QDesktopWidget().screenGeometry()
-        size = self.geometry()
-        self.move((screen.width()-size.width())/2,
-            (screen.height()-size.height())/2)
-
-
-class Board(QFrame):
-
-    msg2Statusbar = pyqtSignal(str)
-
-    BoardWidth = 10
-    BoardHeight = 22
-    Speed = 300
-
-    def __init__(self, parent):
-        super().__init__(parent)
-
-        self.initBoard()
-
-
-    def initBoard(self):
-
-        self.timer = QBasicTimer()
-        self.isWaitingAfterLine = False
-
-        self.curX = 0
-        self.curY = 0
-        self.numLinesRemoved = 0
-        self.board = []
-
-        self.setFocusPolicy(Qt.StrongFocus)
-        self.isStarted = False
-        self.isPaused = False
-        self.clearBoard()
-
-
-    def shapeAt(self, x, y):
-        return self.board[(y * Board.BoardWidth) + x]
-
-
-    def setShapeAt(self, x, y, shape):
-        self.board[(y * Board.BoardWidth) + x] = shape
-
-
-    def squareWidth(self):
-        return self.contentsRect().width() // Board.BoardWidth
-
-
-    def squareHeight(self):
-        return self.contentsRect().height() // Board.BoardHeight
-
-
-    def start(self):
-
-        if self.isPaused:
-            return
-
-        self.isStarted = True
-        self.isWaitingAfterLine = False
-        self.numLinesRemoved = 0
-        self.clearBoard()
-
-        self.msg2Statusbar.emit(str(self.numLinesRemoved))
-
-        self.newPiece()
-        self.timer.start(Board.Speed, self)
-
-
-    def pause(self):
-
-        if not self.isStarted:
-            return
-
-        self.isPaused = not self.isPaused
-
-        if self.isPaused:
-            self.timer.stop()
-            self.msg2Statusbar.emit("paused")
-
-        else:
-            self.timer.start(Board.Speed, self)
-            self.msg2Statusbar.emit(str(self.numLinesRemoved))
-
-        self.update()
-
-
-    def paintEvent(self, event):
-
-        painter = QPainter(self)
-        rect = self.contentsRect()
-
-        boardTop = rect.bottom() - Board.BoardHeight * self.squareHeight()
-
-        for i in range(Board.BoardHeight):
-            for j in range(Board.BoardWidth):
-                shape = self.shapeAt(j, Board.BoardHeight - i - 1)
-
-                if shape != Tetrominoe.NoShape:
-                    self.drawSquare(painter,
-                        rect.left() + j * self.squareWidth(),
-                        boardTop + i * self.squareHeight(), shape)
-
-        if self.curPiece.shape() != Tetrominoe.NoShape:
-
-            for i in range(4):
-
-                x = self.curX + self.curPiece.x(i)
-                y = self.curY - self.curPiece.y(i)
-                self.drawSquare(painter, rect.left() + x * self.squareWidth(),
-                    boardTop + (Board.BoardHeight - y - 1) * self.squareHeight(),
-                    self.curPiece.shape())
-
-
-    def keyPressEvent(self, event):
-
-        if not self.isStarted or self.curPiece.shape() == Tetrominoe.NoShape:
-            super(Board, self).keyPressEvent(event)
-            return
-
-        key = event.key()
-
-        if key == Qt.Key_P:
-            self.pause()
-            return
-
-        if self.isPaused:
-            return
-
-        elif key == Qt.Key_Left:
-            self.tryMove(self.curPiece, self.curX - 1, self.curY)
-
-        elif key == Qt.Key_Right:
-            self.tryMove(self.curPiece, self.curX + 1, self.curY)
-
-        elif key == Qt.Key_Down:
-            self.tryMove(self.curPiece.rotateRight(), self.curX, self.curY)
-
-        elif key == Qt.Key_Up:
-            self.tryMove(self.curPiece.rotateLeft(), self.curX, self.curY)
-
-        elif key == Qt.Key_Space:
-            self.dropDown()
-
-        elif key == Qt.Key_D:
-            self.oneLineDown()
-
-        else:
-            super(Board, self).keyPressEvent(event)
-
-
-    def timerEvent(self, event):
-
-        if event.timerId() == self.timer.timerId():
-
-            if self.isWaitingAfterLine:
-                self.isWaitingAfterLine = False
-                self.newPiece()
+        pygame.init()
+        self.display_width = 1920
+        self.display_height = 1080
+        self.Display = pygame.display.set_mode((self.display_width, self.display_height), pygame.FULLSCREEN)
+        self.ip = ImageProcessor()
+        pygame.display.set_icon(self.ip.icon)
+        pygame.display.set_caption("BattleShips")
+        self.clock = pygame.time.Clock()
+        self.sp = SoundProcessor()
+        self.sp.play()
+
+    def main_menu(self, Display, ip, clock):
+
+        closed = False
+        down = True
+        bsy = 62
+        while not closed:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    closed = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        self.sure_check(self.Display, self.ip, self.clock)
+
+            Display.blit(ip.background, (0, 0))
+            Display.blit(ip.bs, (576, bsy))
+
+            mp = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+
+            if self.display_width / 2 - ip.start1.get_rect().size[0] / 2 + 15 < mp[0] < self.display_width / 2 +\
+               ip.start1.get_rect().size[0] / 2 + 15 and 350 < mp[1] < 350 + ip.start1.get_rect().size[1]:
+                Display.blit(ip.start2, (self.display_width / 2 - ip.start1.get_rect().size[0] / 2 + 15, 350))
+                if click[0] == 1:
+                    self.game_loop()
             else:
-                self.oneLineDown()
+                Display.blit(ip.start1, (self.display_width / 2 - ip.start1.get_rect().size[0] / 2 + 15, 350))
 
-        else:
-            super(Board, self).timerEvent(event)
+            if self.display_width / 2 - ip.settings1.get_rect().size[0] / 2 + 15 < mp[0] < self.display_width / 2 +\
+                    ip.settings1.get_rect().size[0] / 2 + 15 and 500 < mp[1] < 500 +\
+                    ip.settings1.get_rect().size[1]:
+                Display.blit(ip.settings2, (self.display_width / 2 - ip.settings1.get_rect().size[0] / 2 + 15, 500))
+                if click[0] == 1:
+                    self.open_settings(self.Display, self.ip, self.clock)
+            else:
+                Display.blit(ip.settings1, (self.display_width / 2 - ip.settings1.get_rect().size[0] / 2 + 15, 500))
 
+            if self.display_width / 2 - ip.guide1.get_rect().size[0] / 2 + 15 < mp[0] < self.display_width / 2 +\
+               ip.guide1.get_rect().size[0] / 2 + 15 and 650 < mp[1] < 650 + ip.guide1.get_rect().size[1]:
+                Display.blit(ip.guide2, (self.display_width / 2 - ip.guide1.get_rect().size[0] / 2 + 15, 650))
+            else:
+                Display.blit(ip.guide1, (self.display_width / 2 - ip.guide1.get_rect().size[0] / 2 + 15, 650))
 
-    def clearBoard(self):
+            if self.display_width / 2 - ip.exit1.get_rect().size[0] / 2 + 15 < mp[0] < self.display_width / 2 +\
+               ip.exit1.get_rect().size[0] / 2 + 15 and 800 < mp[1] < 800 + ip.exit1.get_rect().size[1]:
+                Display.blit(ip.exit2, (self.display_width / 2 - ip.exit1.get_rect().size[0] / 2 + 15, 800))
+                if click[0] == 1:
+                    self.sure_check(self.Display, self.ip, self.clock)
 
-        for i in range(Board.BoardHeight * Board.BoardWidth):
-            self.board.append(Tetrominoe.NoShape)
+            else:
+                Display.blit(ip.exit1, (self.display_width / 2 - ip.exit1.get_rect().size[0] / 2 + 15, 800))
 
+            if down:
+                bsy += 1
+            elif not down:
+                bsy -= 1
 
-    def dropDown(self):
+            if bsy == 52:
+                down = True
+            if bsy == 82:
+                down = False
 
-        newY = self.curY
+            pygame.display.update()
+            clock.tick(100)
 
-        while newY > 0:
+    def open_settings(self, Display, ip, clock):
 
-            if not self.tryMove(self.curPiece, self.curX, newY - 1):
-                break
-
-            newY -= 1
-
-        self.pieceDropped()
-
-
-    def oneLineDown(self):
-
-        if not self.tryMove(self.curPiece, self.curX, self.curY - 1):
-            self.pieceDropped()
-
-
-    def pieceDropped(self):
-
-        for i in range(4):
-
-            x = self.curX + self.curPiece.x(i)
-            y = self.curY - self.curPiece.y(i)
-            self.setShapeAt(x, y, self.curPiece.shape())
-
-        self.removeFullLines()
-
-        if not self.isWaitingAfterLine:
-            self.newPiece()
-
-
-    def removeFullLines(self):
-
-        numFullLines = 0
-        rowsToRemove = []
-
-        for i in range(Board.BoardHeight):
-
-            n = 0
-            for j in range(Board.BoardWidth):
-                if not self.shapeAt(j, i) == Tetrominoe.NoShape:
-                    n = n + 1
-
-            if n == 10:
-                rowsToRemove.append(i)
-
-        rowsToRemove.reverse()
-
-
-        for m in rowsToRemove:
-
-            for k in range(m, Board.BoardHeight):
-                for l in range(Board.BoardWidth):
-                        self.setShapeAt(l, k, self.shapeAt(l, k + 1))
-
-        numFullLines = numFullLines + len(rowsToRemove)
-
-        if numFullLines > 0:
-
-            self.numLinesRemoved = self.numLinesRemoved + numFullLines
-            self.msg2Statusbar.emit(str(self.numLinesRemoved))
-
-            self.isWaitingAfterLine = True
-            self.curPiece.setShape(Tetrominoe.NoShape)
-            self.update()
-
-
-    def newPiece(self):
-
-        self.curPiece = Shape()
-        self.curPiece.setRandomShape()
-        self.curX = Board.BoardWidth // 2 + 1
-        self.curY = Board.BoardHeight - 1 + self.curPiece.minY()
-
-        if not self.tryMove(self.curPiece, self.curX, self.curY):
-
-            self.curPiece.setShape(Tetrominoe.NoShape)
-            self.timer.stop()
-            self.isStarted = False
-            self.msg2Statusbar.emit("Game over")
+        closed = False
+        down = True
+        bsy = 62
 
 
 
-    def tryMove(self, newPiece, newX, newY):
 
-        for i in range(4):
-
-            x = newX + newPiece.x(i)
-            y = newY - newPiece.y(i)
-
-            if x < 0 or x >= Board.BoardWidth or y < 0 or y >= Board.BoardHeight:
-                return False
-
-            if self.shapeAt(x, y) != Tetrominoe.NoShape:
-                return False
-
-        self.curPiece = newPiece
-        self.curX = newX
-        self.curY = newY
-        self.update()
-
-        return True
+        try:
+            file = open('settings.bs', 'r')
+            settings = file.read()
+            file.close()
+            options = json.loads(settings)
+            all_volume = options["volume"]["all_volume"]
+            music_volume = options["volume"]["music_volume"]
+            effects_volume = options["volume"]["effects_volume"]
+            nickname = options["player"]["nickname"]
+        except:
+            all_volume = 800
+            music_volume = 800
+            effects_volume = 800
+            nickname = "Player"
 
 
-    def drawSquare(self, painter, x, y, shape):
-
-        colorTable = [0x000000, 0xCC6666, 0x66CC66, 0x6666CC,
-                      0xCCCC66, 0xCC66CC, 0x66CCCC, 0xDAAA00]
-
-        color = QColor(colorTable[shape])
-        painter.fillRect(x + 1, y + 1, self.squareWidth() - 2,
-            self.squareHeight() - 2, color)
-
-        painter.setPen(color.lighter())
-        painter.drawLine(x, y + self.squareHeight() - 1, x, y)
-        painter.drawLine(x, y, x + self.squareWidth() - 1, y)
-
-        painter.setPen(color.darker())
-        painter.drawLine(x + 1, y + self.squareHeight() - 1,
-            x + self.squareWidth() - 1, y + self.squareHeight() - 1)
-        painter.drawLine(x + self.squareWidth() - 1,
-            y + self.squareHeight() - 1, x + self.squareWidth() - 1, y + 1)
+        volumes = [all_volume, music_volume, effects_volume]
+        for i in range(len(volumes)):
+            if type(volumes[i]) != int:
+                volumes[i] = 800
+            elif volumes[i] < 780 or volumes[i] > 1140:
+                volumes[i] = 800
 
 
-class Tetrominoe:
+        all_volume = volumes[0]
+        music_volume = volumes[1]
+        effects_volume = volumes[2]
 
-    NoShape = 0
-    ZShape = 1
-    SShape = 2
-    LineShape = 3
-    TShape = 4
-    SquareShape = 5
-    LShape = 6
-    MirroredLShape = 7
+        if type(nickname) != str or len(nickname) < 1 or len(nickname) > 15:
+            nickname = "Player"
+
+        input_box = InputBox(750, 750, 400, 50, nickname)
+
+        settings = {
+            "volume": {
+                "all_volume": all_volume,
+                "music_volume": music_volume,
+                "effects_volume": effects_volume
+            },
+            "player": {
+                "nickname": nickname
+            }
+        }
+        file = open('settings.bs', 'w')
+        file.write(json.dumps(settings))
+        file.close()
+
+        while not closed:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    closed = True
+                input_box.handle_event(event)
+
+            Display.blit(ip.background, (0, 0))
+            Display.blit(ip.bs, (576, bsy))
+
+            mp = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+
+            Display.blit(ip.start1, (self.display_width / 2 - ip.start1.get_rect().size[0] / 2 + 15, 350))
+            Display.blit(ip.settings1, (self.display_width / 2 - ip.settings1.get_rect().size[0] / 2 + 15, 500))
+            Display.blit(ip.guide1, (self.display_width / 2 - ip.guide1.get_rect().size[0] / 2 + 15, 650))
+            Display.blit(ip.exit1, (self.display_width / 2 - ip.exit1.get_rect().size[0] / 2 + 15, 800))
+
+            Display.blit(ip.settings_bar, (self.display_width / 2 - ip.settings_bar.get_rect().size[0] / 2 + 15, 200))
+
+            if self.display_width / 2 + ip.settings_bar.get_rect().size[0] / 2 + 13 -\
+                ip.cross1.get_rect().size[0] < mp[0] < self.display_width / 2 +\
+                ip.settings_bar.get_rect().size[0] / 2 + 13 and 203 < mp[1] < 203 + ip.cross1.get_rect().size[1]:
+                Display.blit(ip.cross2, (self.display_width / 2 + ip.settings_bar.get_rect().size[0] / 2 + 13 -
+                                     ip.cross1.get_rect().size[0], 203))
+                if click[0] == 1:
+
+                    settings = {
+                        "volume": {
+                            "all_volume": all_volume,
+                            "music_volume": music_volume,
+                            "effects_volume": effects_volume
+                        },
+                        "player": {
+                            "nickname": nickname
+                        }
+                    }
+                    file = open('settings.bs', 'w')
+                    file.write(json.dumps(settings))
+                    file.close()
+                    self.main_menu(self.Display, self.ip, self.clock)
+            else:
+                Display.blit(ip.cross1, (self.display_width / 2 + ip.settings_bar.get_rect().size[0] / 2 + 13 -
+                                         ip.cross1.get_rect().size[0], 203))
 
 
-class Shape:
+            if 780 + ip.slider1.get_rect().size[0] /2 < mp[0] < 1140 + ip.slider1.get_rect().size[0] /2 and\
+                                    368 < mp[1] < 368 + ip.slider1.get_rect().size[1]\
+                    and click[0] == 1:
+                all_volume = int(mp[0] - ip.slider1.get_rect().size[0] /2)
+                Display.blit(ip.slider2, (all_volume, 368))
+            else:
+                Display.blit(ip.slider1, (all_volume, 368))
 
-    coordsTable = (
-        ((0, 0),     (0, 0),     (0, 0),     (0, 0)),
-        ((0, -1),    (0, 0),     (-1, 0),    (-1, 1)),
-        ((0, -1),    (0, 0),     (1, 0),     (1, 1)),
-        ((0, -1),    (0, 0),     (0, 1),     (0, 2)),
-        ((-1, 0),    (0, 0),     (1, 0),     (0, 1)),
-        ((0, 0),     (1, 0),     (0, 1),     (1, 1)),
-        ((-1, -1),   (0, -1),    (0, 0),     (0, 1)),
-        ((1, -1),    (0, -1),    (0, 0),     (0, 1))
-    )
+            if 780 + ip.slider1.get_rect().size[0] /2 < mp[0] < 1140 + ip.slider1.get_rect().size[0] /2 and\
+                                    438 < mp[1] < 438 + ip.slider1.get_rect().size[1]\
+                    and click[0] == 1:
+                music_volume = int(mp[0] - ip.slider1.get_rect().size[0] /2)
+                Display.blit(ip.slider2, (music_volume, 438))
+            else:
+                Display.blit(ip.slider1, (music_volume, 438))
 
+            if 780 + ip.slider1.get_rect().size[0] /2 < mp[0] < 1140 + ip.slider1.get_rect().size[0] /2 and\
+                                    518 < mp[1] < 518 + ip.slider1.get_rect().size[1]\
+                    and click[0] == 1:
+                effects_volume = int(mp[0] - ip.slider1.get_rect().size[0] /2)
+                Display.blit(ip.slider2, (effects_volume, 518))
+            else:
+                Display.blit(ip.slider1, (effects_volume, 518))
+
+            if down:
+                bsy += 1
+            elif not down:
+                bsy -= 1
+
+            if bsy == 52:
+                down = True
+            if bsy == 82:
+                down = False
+
+            self.sp.set_effects_volume((effects_volume - 780) / 360)
+            self.sp.set_music_volume((music_volume-780)/360)
+            self.sp.set_master_volume((all_volume-780)/360)
+
+            input_box.update()
+
+            input_box.draw(Display)
+            nickname = input_box.text
+
+            pygame.display.update()
+            clock.tick(100)
+
+    def sure_check(self, Display, ip, clock):
+        self.sp.play_kar()
+        closed = False
+        down = True
+        bsy = 62
+        spos = -ip.sure.get_rect().size[1]
+        while not closed:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    closed = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        self.main_menu(self.Display, self.ip, self.clock)
+
+            Display.blit(ip.background, (0, 0))
+            Display.blit(ip.bs, (576, bsy))
+
+            if spos < 300:
+                spos += 400
+                if spos > 320:
+                    spos = 320
+
+            mp = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+
+            Display.blit(ip.start1, (self.display_width / 2 - ip.start1.get_rect().size[0] / 2 + 15, 350))
+            Display.blit(ip.settings1, (self.display_width / 2 - ip.settings1.get_rect().size[0] / 2 + 15, 500))
+            Display.blit(ip.guide1, (self.display_width / 2 - ip.guide1.get_rect().size[0] / 2 + 15, 650))
+            Display.blit(ip.exit1, (self.display_width / 2 - ip.exit1.get_rect().size[0] / 2 + 15, 800))
+
+            Display.blit(ip.sure, (self.display_width / 2 - ip.sure.get_rect().size[0] / 2 + 15, spos))
+
+            if spos == 320:
+                if self.display_width / 2 - ip.sure.get_rect().size[0] / 2 + 50 < mp[0] < self.display_width / 2 -\
+                                ip.sure.get_rect().size[0] / 2 + 50 + ip.yes1.get_rect().size[0] and 700 < mp[1] < 700\
+                        + ip.yes1.get_rect().size[1]:
+                    Display.blit(ip.yes2, (self.display_width / 2 - ip.sure.get_rect().size[0] / 2 + 50, 700))
+                    if click[0] == 1:
+                        closed = True
+                        pygame.quit()
+                        quit()
+                else:
+                    Display.blit(ip.yes1, (self.display_width / 2 - ip.sure.get_rect().size[0] / 2 + 50, 700))
+
+                if self.display_width / 2 + ip.sure.get_rect().size[0] / 2 - ip.no1.get_rect().size[0] - 20 < mp[0] <\
+                   self.display_width / 2 + ip.sure.get_rect().size[0] / 2 - 20 and 700 < mp[1] < 700 +\
+                   ip.no1.get_rect().size[1]:
+                    Display.blit(ip.no2, (self.display_width / 2 + ip.sure.get_rect().size[0] / 2 -
+                                          ip.no1.get_rect().size[0] - 20, 700))
+                    if click[0] == 1:
+                        self.main_menu(self.Display, self.ip, self.clock)
+                else:
+                    Display.blit(ip.no1, (self.display_width / 2 + ip.sure.get_rect().size[0] / 2 -
+                                          ip.no1.get_rect().size[0] - 20, 700))
+
+            if down:
+                bsy += 1
+            elif not down:
+                bsy -= 1
+
+            if bsy == 52:
+                down = True
+            if bsy == 82:
+                down = False
+
+            pygame.display.update()
+            clock.tick(100)
+
+    def game_loop(self):
+        closed = False
+        while not closed:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    closed = True
+                    pygame.quit()
+                    quit()
+
+            self.Display.blit(self.ip.background, (0, 0))
+
+            pygame.display.update()
+            self.clock.tick(60)
+
+
+class ImageProcessor:
     def __init__(self):
-
-        self.coords = [[0,0] for i in range(4)]
-        self.pieceShape = Tetrominoe.NoShape
-
-        self.setShape(Tetrominoe.NoShape)
-
-
-    def shape(self):
-        return self.pieceShape
-
-
-    def setShape(self, shape):
-
-        table = Shape.coordsTable[shape]
-
-        for i in range(4):
-            for j in range(2):
-                self.coords[i][j] = table[i][j]
-
-        self.pieceShape = shape
-
-
-    def setRandomShape(self):
-        self.setShape(random.randint(1, 7))
+        self.icon = pygame.image.load("img/icon.png")
+        self.background = pygame.image.load("img/backgroundhd.png")
+        self.bs = pygame.image.load("img/battleships2.png")
+        self.start1 = pygame.image.load("img/start1.png")
+        self.start2 = pygame.image.load("img/start2.png")
+        self.settings1 = pygame.image.load("img/settings1.png")
+        self.settings2 = pygame.image.load("img/settings2.png")
+        self.guide1 = pygame.image.load("img/guide1.png")
+        self.guide2 = pygame.image.load("img/guide2.png")
+        self.exit1 = pygame.image.load("img/exit1.png")
+        self.exit2 = pygame.image.load("img/exit2.png")
+        self.yes1 = pygame.image.load("img/yes1.png")
+        self.yes2 = pygame.image.load("img/yes2.png")
+        self.no1 = pygame.image.load("img/no1.png")
+        self.no2 = pygame.image.load("img/no2.png")
+        self.sure = pygame.image.load("img/sure.png")
+        self.settings_bar = pygame.image.load("img/settings_bar.png")
+        self.cross1 = pygame.image.load("img/cross1.png")
+        self.cross2 = pygame.image.load("img/cross2.png")
+        self.slider1 = pygame.image.load("img/slider1.png").convert_alpha()
+        self.slider2 = pygame.image.load("img/slider2.png").convert_alpha()
 
 
-    def x(self, index):
-        return self.coords[index][0]
+class SoundProcessor:
+    def __init__(self):
+        pygame.mixer.init(44100, 0, -1, 8192)
+        self.sound = pygame.mixer.Sound("sounds\oka.ogg")
+        self.kar = pygame.mixer.Sound("sounds\kar.ogg")
+        try:
+            file = open('settings.bs', 'r')
+            settings = file.read()
+            file.close()
+            options = json.loads(settings)
+            self.set_music_volume((options["volume"]["music_volume"] - 780) / 360)
+            self.set_effects_volume((options["volume"]["effects_volume"] - 780) / 360)
+            self.set_master_volume((options["volume"]["all_volume"] - 780) / 360)
+        except:
+            self.set_music_volume(1/18)
+            self.set_effects_volume(1/18)
+            self.set_master_volume(1/18)
+
+    def play(self):
+        self.sound.play(-1)
+
+    def play_kar(self):
+        self.kar.play(0)
+
+    def set_music_volume(self, volume):
+        self.sound.set_volume(volume)
+
+    def set_effects_volume(self, volume):
+        self.kar.set_volume(volume)
+
+    def set_master_volume(self, volume):
+        self.sound.set_volume(self.sound.get_volume() * volume)
+        self.kar.set_volume(self.kar.get_volume() * volume)
 
 
-    def y(self, index):
-        return self.coords[index][1]
-
-
-    def setX(self, index, x):
-        self.coords[index][0] = x
-
-
-    def setY(self, index, y):
-        self.coords[index][1] = y
-
-
-    def minX(self):
-
-        m = self.coords[0][0]
-        for i in range(4):
-            m = min(m, self.coords[i][0])
-
-        return m
-
-
-    def maxX(self):
-
-        m = self.coords[0][0]
-        for i in range(4):
-            m = max(m, self.coords[i][0])
-
-        return m
-
-
-    def minY(self):
-
-        m = self.coords[0][1]
-        for i in range(4):
-            m = min(m, self.coords[i][1])
-
-        return m
-
-
-    def maxY(self):
-
-        m = self.coords[0][1]
-        for i in range(4):
-            m = max(m, self.coords[i][1])
-
-        return m
-
-
-    def rotateLeft(self):
-
-        if self.pieceShape == Tetrominoe.SquareShape:
-            return self
-
-        result = Shape()
-        result.pieceShape = self.pieceShape
-
-        for i in range(4):
-
-            result.setX(i, self.y(i))
-            result.setY(i, -self.x(i))
-
-        return result
-
-
-    def rotateRight(self):
-
-        if self.pieceShape == Tetrominoe.SquareShape:
-            return self
-
-        result = Shape()
-        result.pieceShape = self.pieceShape
-
-        for i in range(4):
-
-            result.setX(i, -self.y(i))
-            result.setY(i, self.x(i))
-
-        return result
-
-
-
-
-
-if __name__ == '__main__':
-
-    app = QApplication([])
-    game = Game()
-    sys.exit(app.exec_())
-"""
+gm = GameManager()
+gm.main_menu(gm.Display, gm.ip, gm.clock)
